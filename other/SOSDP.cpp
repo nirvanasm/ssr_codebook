@@ -1,5 +1,5 @@
 FOR(mask,dua[n]){
-	DP[mask]=A[0];
+    DP[mask]=A[0];
     for(int i=mask;i>0;i=(i-1)&mask) DP[mask]+=A[i];
 }
 

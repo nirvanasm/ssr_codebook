@@ -34,5 +34,5 @@ ll work(ll a,ll b,ll c){
 		ans = min(ans, abs(solX+i*b) + abs(solY-i*a));
 		ans = min(ans, abs(solX-i*b) + abs(solY+i*a));
 	}
-	return ans;	
+	return ans;
 }

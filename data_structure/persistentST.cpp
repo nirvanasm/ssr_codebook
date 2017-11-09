@@ -22,7 +22,7 @@ nd* upd(nd* bef, int l, int r, int x){
 //QUERY HOW MANY NUMBER LESS THAN MX AFTER N-TH UPDATE
 int get(nd* cur, int l, int r, int mx){
 	if(r<=mx)return cur->val;
-	if(l>mx)return 0;	
+	if(l>mx)return 0;
 	int m = (l+r)/2;
 	return get(cur->lf, l, m, mx) + get(cur->rg, m+1, r, mx);
 }

@@ -1,0 +1,7 @@
+update(a, b, c) :
+  update(BIT1, a, c)
+  update(BIT1, b+1, -c)
+  update(BIT2, a, -c*(a-1))
+  update(BIT2, b+1, c*b)
+query(x) :
+  query(BIT1, x) * x + query(BIT2, x)

@@ -1,0 +1,5 @@
+staircase nim
+solution : xorsum of all odd steps
+
+staircase nim on tree
+solution : xorsum of all odd distance nodes

@@ -3,3 +3,8 @@ solution : xorsum of all odd steps
 
 staircase nim on tree
 solution : xorsum of all odd distance nodes
+
+misere nim
+solution :
+  if((!all_one&&xor_sum==0)||(all_one&&xor_sum==1))puts("Second");
+  else puts("First");

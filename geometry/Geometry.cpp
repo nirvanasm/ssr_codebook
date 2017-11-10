@@ -1,165 +1,3 @@
-/*
-TABLE OF CONTENT
-0. Basic Rule
-	0.1. Everything is in double
-	0.2. Every comparison use EPS
-	0.3. Every degree in rad
-1. General Double Operation
-	1.1. const double EPS=1E-9
-	1.2. const double PI=acos(-1.0)
-	1.3. const double INFD=1E9
-	1.3. between_d(double x,double l,double r)
-		check whether x is between l and r inclusive with EPS
-	1.4. same_d(double x,double y)
-		check whether x=y with EPS
-	1.5. dabs(double x)
-		absolute value of x
-2. Point
-	2.1. struct point
-		2.1.1. double x,y
-			cartesian coordinate of the point
-		2.1.2. point()
-			default constructor
-		2.1.3. point(double _x,double _y)
-			constructor, set the point to (_x,_y)
-		2.1.4. bool operator< (point other)
-			regular pair<double,double> operator < with EPS
-		2.1.5. bool operator== (point other)
-			regular pair<double,double> operator == with EPS
-	2.2. hypot(point P)
-		length of hypotenuse of point P to (0,0)
-	2.3. e_dist(point P1,point P2)
-		euclidean distance from P1 to P2
-	2.4. m_dist(point P1,point P2)
-		manhattan distance from P1 to P2
-	2.5. rotate(point P,point O,double angle)
-		rotate point P from the origin O by angle ccw
-	2.6. pointBetween(point P,point L,point R)
-		check if P is on the line segment LR
-	2.7. mid(point P,point Q)
-		the exact middle of P and Q
-3. Vector
-	3.1. struct vec
-		3.1.1. double x,y
-			x and y magnitude of the vector
-		3.1.2. vec()
-			default constructor
-		3.1.3. vec(double _x,double _y)
-			constructor, set the vector to (_x,_y)
-		3.1.4. vec(point A,point B)
-			constructor, set the vector to vector AB (A->B)
-	3.2. scale(vec v, double s)
-			scaling/dilatation of vector v with s
-	3.3. flip(vec v)
-			flip the direction of v
-	3.4. dot(vec u, vec v)
-			dot product of u . v
-	3.5. cross(vec u,vec v)
-			cross product of u x v
-	3.6. norm_sq(vec v)
-			square of length of vector v
-	3.7. translate(point P,vec v)
-			translation of point P based on v
-	3.8. rotate(point P,point O,double angle)
-			rotate point P from origin O with given angle
-	3.9. angle(point A,point O,point B)
-			the angle of AOB
-	3.10. orientation(point O,point P,point Q)
-			orientation of P and Q from origin O (ccw is -)
-4. Line
-	4.1. struct line
-		4.1.1. double a,b,c
-			line representation ax+by+c=0, b is 0/1
-		4.1.2. line()
-			default constructor
-		4.1.3. line(double _a,double _b,double _c)
-			constructor, set the line to _ax+_by+_c=0
-		4.1.4. line(point P1,point P2)
-			constructor, construct line from 2 point
-		4.1.5. line(point P,double slope)
-			constructor, construct line from 1 point and slope
-		4.1.6. operator== (line other)
-			check if 2 lines are the same
-		4.1.7. slope()
-			return slope, INFD if b=0.0 (vertical)
-	4.2. paralel(line L1,line L2)
-		check if 2 lines are paralel
-	4.3. bool intersection(line L1,line L2,point &P)
-		check if 2 lines are intersect, intersection point in P
-	4.4. pointToLine(point P,point A,point B,point &C)
-		find distance between point P and line AB, projection point in C
-	4.5. lineToLine(line L1,line L2)
-		find closest distance between 2 lines L1 and L2
-5. Line Segment
-	5.1. struct segment
-		5.1.1. point P,Q
-			both end points of the segment
-		5.1.2. line L
-			line equation of the segment
-		5.1.3. segment()
-			default constructor
-		5.1.4. segment(point _P,point _Q)
-			constructor, construct segment _P_Q
-		5.1.5. operator==(segment other)
-			check if 2 segments are the same
-	5.2. onSegment(point P,segment S)
-		check if point P is on segment S
-	5.3. s_intersection(segment S1,segment S2)
-		check if S1 and S2 intersect with cross product
-	5.4. ss_intersection(segment S1,segment S2,point &P1,point &P2)
-		return how many point intersection (0 if none, 1 if only 1, 2 if infinite), intersection point in P1, or intersection segment in P1P2
-	5.5. pointToSegment(point P,point A,point B,point &C)
-		return distance point P to segment AB, projection point in C
-	5.6. segmentToSegment(segment S1,segment S2)
-		return distance segment S1 to S2
-6. Circle
-	6.1. struct circle
-		6.1.1. point P
-			center point of the circle
-		6.1.2. double r
-			radius of the circle
-		6.1.3. circle()
-			default constructor
-		6.1.4. circle(point _P,double _r)
-			constructor, set the circle to center point _P with radius _r
-		6.1.5. circle(point P1,point P2)
-			constructor, construct circle from diameter P1P2
-		6.1.6. circle(point P1,point P2,point P3)
-			constructor, construct circle from 3 points
-		6.1.7. operator==(circle other)
-			check if 2 circles are the same
-	6.2. insideCircle(point P,circle C)
-		check if point P is inside circle C
-	6.3. c_intersection(circle C1,circle C2,point &P1,point &P2)
-		check if 2 circles intersect, intersection point in P1 and/or P2
-	6.4. lc_intersection(line L,circle O,point &P1,point &P2)
-		check if line and circle intersect, intersection point in P1 and/or P2
-	6.5. sc_intersection(segment S,circle C,point &P1,point &P2)
-		check if segment and circle intersect, intersection point in P1 and/or P2
-7. Triangle
-	7.1. t_perimeter(point A,point B,point C)
-		return the perimeter of triangle
-	7.2. t_area(point A,point B,point C)
-		return the area of triangle with heron's formula (can also use ab sin(theta)/2)
-	7.3. t_inCircle(point A,point B,point C)
-		return the inner circle (incircle) of triangle ABC
-	7.4. t_outCircle(point A,point B,point C)
-		return the outer circle (circumcircle) of triangle ABC
-8. Polygon
-	8.1. struct polygon
-		8.1.1. vector<point> P
-			closed polygon, P[0]=P[n]
-*/
-#include<bits/stdc++.h>
-#define pb push_back
-#define pob pop_back
-#define FOR(i,n) for (int i=0;i<n;i++)
-#define REP(i,l,r) for (int i=l;i<r;i++)
-#define REPS(i,l,r) for (int i=l;i<=r;i++)
-#define FORD(i,n) for (int i=n-1;i>=0;i--)
-#define REPD(i,l,r) for (int i=r-1;i>=l;i--)
-using namespace std;
-
 /*General Double Operation*/
 
 const double EPS=0.0;
@@ -545,21 +383,6 @@ struct polygon {
 	}
 };
 
-bool rayCast(point P,polygon &A) {
-	point Q(P.x,10000);
-	line cast(P,Q);
-	int cnt=0;
-	FOR(i,(int)(A.P.size())-1){
-		line temp(A.P[i],A.P[i+1]);
-		point I;
- 		bool B=intersection(cast,temp,I);
-		if (!B) continue;
-		else if (I==A.P[i]||I==A.P[i+1]) continue;
-		else if (pointBetween(I,A.P[i],A.P[i+1])&&pointBetween(I,P,Q)) cnt++;
-	}
-	return cnt%2==1;
-}
-
 polygon convexHull(vector<point> &pts){
     sort(pts.begin(),pts.end());
     vector<point> hull;
@@ -585,7 +408,7 @@ int findTop(polygon &A) {
 	return ret;
 }
 
-int inConvexPolygon(point &P,polygon &A,int idxTop) {
+int inConvexPolygon(point &P,polygon &A,int idxTop) { //-1 inside,0 onsegment, 1 outside
 	if (P<A.P[0]||A.P[idxTop]<P) return 1;
 	double o=orientation(P,A.P[0],A.P[idxTop]);
 	if (o==0.0) {
@@ -600,6 +423,22 @@ int inConvexPolygon(point &P,polygon &A,int idxTop) {
 		vector<point>::iterator itRight=lower_bound(A.P.begin()+1,A.P.begin()+idxTop,P);
 		return sign(orientation(itRight[0],P,itRight[-1]));
 	}
+}
+
+int inSimplePolygon(point &P,polygon &A) { //-1 inside,0 onsegment, 1 outside
+	int ret=0;
+	FOR(i,A.P.size()) {
+		if (P==A.P[i]) return 0;
+		int j=A.next(i);
+		if (onSegment(P,segment(A.P[i],A.P[j]))) return 0;
+		bool below=(A.P[i].y<P.y);
+		if (below!=(A.P[j].y<P.y)) {
+			double o=orientation(P,A.P[i],A.P[j]);
+			if (o==0.0) return 0;
+			if (below==(o>0.0)) ret+=below?1:-1;
+		}
+	}
+	return ret==0?1:-1;
 }
 
 circle minCoverCircle(polygon &A) {

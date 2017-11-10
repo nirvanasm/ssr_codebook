@@ -1,0 +1,8 @@
+minimum vertex cover in bipartite graph = maximum bipartite matching
+print :
+edges that belong to M go from right to left
+other edges go from left to right
+run DFS starting at all left vertices that do not belong to M
+take all visited right vertices and all not visited left vertices of M
+
+reference : http://codeforces.com/blog/entry/17534?#comment-223759

@@ -195,15 +195,15 @@ bool onSegment(point P,segment S) {
 }
 
 bool s_intersection(segment S1,segment S2) {
-	double o1=orientation(S1.P,S1.Q,S2.P);
-	double o2=orientation(S1.P,S1.Q,S2.Q);
-	double o3=orientation(S2.P,S2.Q,S1.P);
-	double o4=orientation(S2.P,S2.Q,S1.Q);
+	int o1=sign(orientation(S1.P,S1.Q,S2.P));
+	int o2=sign(orientation(S1.P,S1.Q,S2.Q));
+	int o3=sign(orientation(S2.P,S2.Q,S1.P));
+	int o4=sign(orientation(S2.P,S2.Q,S1.Q));
 	if (o1!=o2 && o3!=o4) return true;
-	if (o1==0.0 && onSegment(S2.P,S1)) return true;
-	if (o2==0.0 && onSegment(S2.Q,S1)) return true;
-	if (o3==0.0 && onSegment(S1.P,S2)) return true;
-	if (o4==0.0 && onSegment(S2.Q,S2)) return true;
+	if (o1==0 && onSegment(S2.P,S1)) return true;
+	if (o2==0 && onSegment(S2.Q,S1)) return true;
+	if (o3==0 && onSegment(S1.P,S2)) return true;
+	if (o4==0 && onSegment(S2.Q,S2)) return true;
 	return false;
 }
 

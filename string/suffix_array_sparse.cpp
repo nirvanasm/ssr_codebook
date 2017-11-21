@@ -73,7 +73,7 @@ int main(){
   cin>>s;
   init();
   for(int i = 1,nx = 1;i<LOG_MAX;i++,nx*=2){
-    vector<dt>ls;	
+    vector<dt>ls;
     for(int j = 0;j<s.length();j++){
       if(j+nx<s.length())ls.pb(dt(sparse[i-1][j],sparse[i-1][j+nx],j));
       else ls.pb(dt(sparse[i-1][j],0,j));
